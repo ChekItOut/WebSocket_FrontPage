@@ -1,70 +1,65 @@
-# Getting Started with Create React App
+# Longkathon Chat Test
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+WebSocket(STOMP + SockJS) 기반 실시간 채팅 테스트 페이지입니다.
+Spring Boot 백엔드 서버와 연동하여 1:1 채팅을 테스트할 수 있습니다.
 
-## Available Scripts
+## 기술 스택
 
-In the project directory, you can run:
+- **Frontend**: React 19, Create React App
+- **WebSocket**: @stomp/stompjs + sockjs-client
+- **인증**: JWT (Access Token / Refresh Token) + Google OAuth2
 
-### `npm start`
+## 주요 기능
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Google OAuth2 로그인 / 로그아웃
+- JWT Access Token 자동 갱신 (401 응답 시 Refresh Token으로 재발급)
+- REST API를 통한 채팅방 생성 및 입장
+- STOMP over SockJS 실시간 메시지 송수신
+- WebSocket 연결 상태 표시 (CONNECTED / CONNECTING / DISCONNECTED)
+- 수동 WebSocket 재연결 / 종료
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 프로젝트 구조
 
-### `npm test`
+```
+src/
+├── index.js            # React 엔트리포인트
+├── App.js              # ChatTestPage 렌더링
+├── ChatTestPage.js     # 채팅 테스트 페이지 (인증, REST, WebSocket 로직 포함)
+├── App.css
+└── index.css
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 백엔드 연동 스펙
 
-### `npm run build`
+| 항목 | 값 |
+|---|---|
+| API Base URL | `http://localhost:8080` |
+| SockJS Endpoint | `/chat/inbox` |
+| STOMP 구독 경로 | `/sub/channel/{chatRoomId}` |
+| STOMP 전송 경로 | `/pub/message` |
+| 채팅방 생성 API | `POST /v1/chatRoom` |
+| 토큰 재발급 API | `POST /api/token` |
+| OAuth2 로그인 | `/oauth2/authorization/google` |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 시작하기
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 사전 요구사항
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Node.js
+- 백엔드 서버가 `http://localhost:8080`에서 실행 중이어야 합니다
 
-### `npm run eject`
+### 설치 및 실행
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm install
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+브라우저에서 [http://localhost:3000](http://localhost:3000)으로 접속합니다.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 사용 방법
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. **Google Login** 버튼을 클릭하여 로그인합니다.
+2. 좌측 패널에서 상대 유저 ID를 입력하고 **입장** 버튼을 클릭합니다.
+3. 채팅방이 생성되면 WebSocket이 자동으로 연결됩니다.
+4. 하단 입력창에 메시지를 입력하고 Enter 또는 **전송** 버튼을 클릭합니다.
