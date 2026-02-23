@@ -163,10 +163,7 @@ export default function ChatTestPage() {
 
   // 2) 서버 refresh 폐기 (재발급 로직 없이)
   try {
-    await fetch(`${API_BASE}/api/refresh-token`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    await httpRequest("DELETE", "/api/refresh-token");
   } catch {}
 
   // 3) 클라이언트 정리
